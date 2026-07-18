@@ -1,3 +1,10 @@
+## [1.0.6](https://github.com/wyre-technology/node-halopsa/compare/v1.0.5...v1.0.6) (2026-07-18)
+
+
+### Bug Fixes
+
+* read HTTP response bodies exactly once ([#43](https://github.com/wyre-technology/node-halopsa/issues/43)) ([2333366](https://github.com/wyre-technology/node-halopsa/commit/2333366a7a322312bd8520d8ecb0c7e40897d0e8)), closes [connectwise-automate-mcp#54](https://github.com/connectwise-automate-mcp/issues/54)
+
 ## [1.0.5](https://github.com/wyre-technology/node-halopsa/compare/v1.0.4...v1.0.5) (2026-06-22)
 
 
