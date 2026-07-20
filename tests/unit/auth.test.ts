@@ -2,7 +2,7 @@
  * Authentication tests
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { http, HttpResponse } from 'msw';
 import { server } from '../mocks/server.js';
 import { AuthManager } from '../../src/auth.js';
@@ -58,6 +58,51 @@ describe('AuthManager', () => {
       );
 
       await expect(authManager.getToken()).rejects.toThrow(HaloPsaAuthenticationError);
+    });
+
+    // `fetch` rejects with a bare `TypeError: fetch failed` for every
+    // network-layer problem — bad DNS, TLS mismatch, refused connection,
+    // timeout. The diagnosis lives in `error.cause`, so dropping it leaves
+    // the caller with an error that names no cause at all.
+    describe('network-level failures', () => {
+      afterEach(() => {
+        vi.unstubAllGlobals();
+      });
+
+      /** Reject like undici does: a bare `fetch failed` wrapping the real reason. */
+      function stubFetchFailure(causeMessage: string): void {
+        vi.stubGlobal('fetch', () =>
+          Promise.reject(
+            Object.assign(new TypeError('fetch failed'), {
+              cause: new Error(causeMessage),
+            })
+          )
+        );
+      }
+
+      it('should surface the underlying cause of a fetch failure', async () => {
+        stubFetchFailure(
+          "Hostname/IP does not match certificate's altnames: Host: bogus.halopsa.com.halopsa.com"
+        );
+
+        await expect(authManager.getToken()).rejects.toThrow(
+          /does not match certificate's altnames/
+        );
+      });
+
+      it('should surface a DNS failure cause', async () => {
+        stubFetchFailure('getaddrinfo ENOTFOUND nosuchtenant.halopsa.com');
+
+        await expect(authManager.getToken()).rejects.toThrow(/ENOTFOUND/);
+      });
+
+      it('should still report a fetch failure when there is no cause', async () => {
+        vi.stubGlobal('fetch', () => Promise.reject(new TypeError('fetch failed')));
+
+        await expect(authManager.getToken()).rejects.toThrow(
+          /Failed to acquire token: fetch failed/
+        );
+      });
     });
   });
 

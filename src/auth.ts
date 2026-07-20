@@ -6,6 +6,24 @@ import type { ResolvedConfig } from './config.js';
 import { HaloPsaAuthenticationError } from './errors.js';
 
 /**
+ * Describe a thrown request error in a way that names the actual problem.
+ *
+ * `fetch` collapses every network-layer failure — bad DNS, TLS certificate
+ * mismatch, refused connection, timeout — into a bare `TypeError: fetch
+ * failed`. The detail that identifies which one it was is only ever on
+ * `error.cause`, so report it alongside the message.
+ */
+function describeRequestError(error: unknown): string {
+  if (!(error instanceof Error)) {
+    return 'Unknown error';
+  }
+
+  return error.cause instanceof Error
+    ? `${error.message} (${error.cause.message})`
+    : error.message;
+}
+
+/**
  * Token information
  */
 export interface TokenInfo {
@@ -167,7 +185,7 @@ export class AuthManager {
         throw error;
       }
       throw new HaloPsaAuthenticationError(
-        `Failed to acquire token: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Failed to acquire token: ${describeRequestError(error)}`,
         0,
         error
       );
