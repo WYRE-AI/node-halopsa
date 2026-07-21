@@ -39,6 +39,40 @@ describe('resolveConfig', () => {
     expect(config.baseUrl).toBe('https://custom.halopsa.com');
   });
 
+  describe('tenant normalization', () => {
+    const base = { clientId: 'test-id', clientSecret: 'test-secret' };
+
+    it('should trim surrounding whitespace from a tenant', () => {
+      expect(resolveConfig({ ...base, tenant: '  mycompany  ' }).baseUrl).toBe(
+        'https://mycompany.halopsa.com'
+      );
+    });
+
+    it('should coerce a full hosted host to its subdomain', () => {
+      expect(resolveConfig({ ...base, tenant: 'mycompany.halopsa.com' }).baseUrl).toBe(
+        'https://mycompany.halopsa.com'
+      );
+    });
+
+    it('should coerce a full hosted URL to its subdomain', () => {
+      expect(resolveConfig({ ...base, tenant: 'https://mycompany.halopsa.com/' }).baseUrl).toBe(
+        'https://mycompany.halopsa.com'
+      );
+    });
+
+    it('should coerce other hosted Halo domains to their subdomain', () => {
+      expect(resolveConfig({ ...base, tenant: 'mycompany.haloitsm.com' }).baseUrl).toBe(
+        'https://mycompany.halopsa.com'
+      );
+    });
+
+    it('should reject a custom-domain tenant and point at baseUrl', () => {
+      expect(() => resolveConfig({ ...base, tenant: 'halo.mycompany.co.uk' })).toThrow(
+        /not a hosted Halo subdomain.*baseUrl/s
+      );
+    });
+  });
+
   it('should throw if neither tenant nor baseUrl provided', () => {
     expect(() =>
       resolveConfig({

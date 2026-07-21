@@ -35,6 +35,38 @@ function validateBaseUrl(rawUrl: string): void {
   );
 }
 
+/** Hosted Halo domains a tenant subdomain may be paired with. */
+const HALO_HOSTED_DOMAINS = ['halopsa.com', 'haloitsm.com', 'haloservicedesk.com', 'nethelpdesk.com'];
+
+/**
+ * Normalize a user-supplied tenant into the bare subdomain that
+ * `https://{tenant}.halopsa.com` expects.
+ *
+ * Users routinely supply a full host or URL here instead of the subdomain
+ * ("acme.halopsa.com", "https://acme.halopsa.com/"). Because `*.halopsa.com`
+ * has a wildcard DNS record, the resulting `acme.halopsa.com.halopsa.com`
+ * still resolves — it then dies at TLS, because the wildcard certificate
+ * only covers a single label. The caller sees an opaque `fetch failed`.
+ *
+ * TODO(policy): decide what to do with a tenant that isn't a bare subdomain.
+ * See HALO_HOSTED_DOMAINS above for the recognized hosted domains, and
+ * HaloPsaConfigurationError for the rejection path.
+ */
+function normalizeTenant(tenant: string): string {
+  // Accept a full URL or bare host; keep only the host (drop scheme and path).
+  const host = tenant.replace(/^https?:\/\//i, '').replace(/\/.*$/, '');
+
+  if (!host.includes('.')) return host; // already a bare subdomain
+
+  const domain = HALO_HOSTED_DOMAINS.find((d) => host.endsWith(`.${d}`));
+  if (domain) return host.slice(0, -(domain.length + 1));
+
+  throw new HaloPsaConfigurationError(
+    `Invalid tenant: "${tenant}" is not a hosted Halo subdomain. ` +
+      `Use baseUrl for a self-hosted or custom-domain instance.`,
+  );
+}
+
 /**
  * Rate limiting configuration
  */
@@ -109,7 +141,7 @@ export function resolveConfig(config: HaloPsaConfig): ResolvedConfig {
     baseUrl = config.baseUrl.replace(/\/$/, '');
     validateBaseUrl(baseUrl);
   } else if (config.tenant) {
-    baseUrl = `https://${config.tenant}.halopsa.com`;
+    baseUrl = `https://${normalizeTenant(config.tenant.trim())}.halopsa.com`;
   } else {
     throw new HaloPsaConfigurationError('Either tenant or baseUrl must be provided');
   }
