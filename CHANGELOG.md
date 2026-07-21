@@ -1,3 +1,10 @@
+## [1.0.7](https://github.com/wyre-technology/node-halopsa/compare/v1.0.6...v1.0.7) (2026-07-21)
+
+
+### Bug Fixes
+
+* **auth:** surface token-fetch cause and normalize tenant ([#46](https://github.com/wyre-technology/node-halopsa/issues/46)) ([b6ef1d9](https://github.com/wyre-technology/node-halopsa/commit/b6ef1d99c5a68b4380fb6817eb8a794ab5dc76d2))
+
 ## [1.0.6](https://github.com/wyre-technology/node-halopsa/compare/v1.0.5...v1.0.6) (2026-07-18)
 
 
