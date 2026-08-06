@@ -1,3 +1,10 @@
+## [1.0.8](https://github.com/wyre-technology/node-halopsa/compare/v1.0.7...v1.0.8) (2026-08-06)
+
+
+### Bug Fixes
+
+* **deps:** ignore unreachable ip-address advisory in dependabot config ([#57](https://github.com/wyre-technology/node-halopsa/issues/57)) ([b6c653f](https://github.com/wyre-technology/node-halopsa/commit/b6c653fad2fcdaff6f236514eb96e869bdfdbdce))
+
 ## [1.0.7](https://github.com/wyre-technology/node-halopsa/compare/v1.0.6...v1.0.7) (2026-07-21)
 
 
