@@ -66,11 +66,11 @@ export class ClientsResource {
    * Create a new client
    */
   async create(data: ClientCreateData): Promise<Client> {
-    const response = await this.httpClient.request<{ clients: Client[] }>('/Client', {
+    const response = await this.httpClient.request<Client | { clients: Client[] }>('/Client', {
       method: 'POST',
       body: [data],
     });
-    const client = response.clients[0];
+    const client = unwrapSingle<Client>(response, 'clients');
     if (!client) {
       throw new Error('Failed to create client');
     }
@@ -81,11 +81,11 @@ export class ClientsResource {
    * Update an existing client
    */
   async update(id: number, data: ClientUpdateData): Promise<Client> {
-    const response = await this.httpClient.request<{ clients: Client[] }>('/Client', {
+    const response = await this.httpClient.request<Client | { clients: Client[] }>('/Client', {
       method: 'POST',
       body: [{ id, ...data }],
     });
-    const client = response.clients[0];
+    const client = unwrapSingle<Client>(response, 'clients');
     if (!client) {
       throw new Error('Failed to update client');
     }

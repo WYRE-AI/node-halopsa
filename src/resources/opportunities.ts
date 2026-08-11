@@ -66,11 +66,11 @@ export class OpportunitiesResource {
    * Create a new opportunity
    */
   async create(data: OpportunityCreateData): Promise<Opportunity> {
-    const response = await this.httpClient.request<{ opportunities: Opportunity[] }>('/Opportunities', {
+    const response = await this.httpClient.request<Opportunity | { opportunities: Opportunity[] }>('/Opportunities', {
       method: 'POST',
       body: [data],
     });
-    const opportunity = response.opportunities[0];
+    const opportunity = unwrapSingle<Opportunity>(response, 'opportunities');
     if (!opportunity) {
       throw new Error('Failed to create opportunity');
     }
@@ -81,11 +81,11 @@ export class OpportunitiesResource {
    * Update an existing opportunity
    */
   async update(id: number, data: OpportunityUpdateData): Promise<Opportunity> {
-    const response = await this.httpClient.request<{ opportunities: Opportunity[] }>('/Opportunities', {
+    const response = await this.httpClient.request<Opportunity | { opportunities: Opportunity[] }>('/Opportunities', {
       method: 'POST',
       body: [{ id, ...data }],
     });
-    const opportunity = response.opportunities[0];
+    const opportunity = unwrapSingle<Opportunity>(response, 'opportunities');
     if (!opportunity) {
       throw new Error('Failed to update opportunity');
     }

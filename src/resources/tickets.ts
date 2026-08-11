@@ -68,11 +68,11 @@ export class TicketsResource {
    * Create a new ticket
    */
   async create(data: TicketCreateData): Promise<Ticket> {
-    const response = await this.httpClient.request<{ tickets: Ticket[] }>('/Tickets', {
+    const response = await this.httpClient.request<Ticket | { tickets: Ticket[] }>('/Tickets', {
       method: 'POST',
       body: [data],
     });
-    const ticket = response.tickets[0];
+    const ticket = unwrapSingle<Ticket>(response, 'tickets');
     if (!ticket) {
       throw new Error('Failed to create ticket');
     }
@@ -83,11 +83,11 @@ export class TicketsResource {
    * Update an existing ticket
    */
   async update(id: number, data: TicketUpdateData): Promise<Ticket> {
-    const response = await this.httpClient.request<{ tickets: Ticket[] }>('/Tickets', {
+    const response = await this.httpClient.request<Ticket | { tickets: Ticket[] }>('/Tickets', {
       method: 'POST',
       body: [{ id, ...data }],
     });
-    const ticket = response.tickets[0];
+    const ticket = unwrapSingle<Ticket>(response, 'tickets');
     if (!ticket) {
       throw new Error('Failed to update ticket');
     }
@@ -116,11 +116,11 @@ export class TicketsResource {
    * Add an action to a ticket
    */
   async addAction(id: number, data: ActionCreateData): Promise<TicketAction> {
-    const response = await this.httpClient.request<{ actions: TicketAction[] }>('/Actions', {
+    const response = await this.httpClient.request<TicketAction | { actions: TicketAction[] }>('/Actions', {
       method: 'POST',
       body: [{ ticket_id: id, ...data }],
     });
-    const action = response.actions[0];
+    const action = unwrapSingle<TicketAction>(response, 'actions');
     if (!action) {
       throw new Error('Failed to create action');
     }
@@ -138,11 +138,11 @@ export class TicketsResource {
    * Add an attachment to a ticket
    */
   async addAttachment(id: number, data: AttachmentCreateData): Promise<TicketAttachment> {
-    const response = await this.httpClient.request<{ attachments: TicketAttachment[] }>(`/Tickets/${id}/Attachments`, {
+    const response = await this.httpClient.request<TicketAttachment | { attachments: TicketAttachment[] }>(`/Tickets/${id}/Attachments`, {
       method: 'POST',
       body: [data],
     });
-    const attachment = response.attachments[0];
+    const attachment = unwrapSingle<TicketAttachment>(response, 'attachments');
     if (!attachment) {
       throw new Error('Failed to create attachment');
     }

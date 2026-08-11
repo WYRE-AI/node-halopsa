@@ -66,11 +66,11 @@ export class ItemsResource {
    * Create a new item
    */
   async create(data: ItemCreateData): Promise<Item> {
-    const response = await this.httpClient.request<{ items: Item[] }>('/Item', {
+    const response = await this.httpClient.request<Item | { items: Item[] }>('/Item', {
       method: 'POST',
       body: [data],
     });
-    const item = response.items[0];
+    const item = unwrapSingle<Item>(response, 'items');
     if (!item) {
       throw new Error('Failed to create item');
     }
@@ -81,11 +81,11 @@ export class ItemsResource {
    * Update an existing item
    */
   async update(id: number, data: ItemUpdateData): Promise<Item> {
-    const response = await this.httpClient.request<{ items: Item[] }>('/Item', {
+    const response = await this.httpClient.request<Item | { items: Item[] }>('/Item', {
       method: 'POST',
       body: [{ id, ...data }],
     });
-    const item = response.items[0];
+    const item = unwrapSingle<Item>(response, 'items');
     if (!item) {
       throw new Error('Failed to update item');
     }

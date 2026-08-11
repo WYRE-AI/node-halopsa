@@ -66,11 +66,11 @@ export class SuppliersResource {
    * Create a new supplier
    */
   async create(data: SupplierCreateData): Promise<Supplier> {
-    const response = await this.httpClient.request<{ suppliers: Supplier[] }>('/Supplier', {
+    const response = await this.httpClient.request<Supplier | { suppliers: Supplier[] }>('/Supplier', {
       method: 'POST',
       body: [data],
     });
-    const supplier = response.suppliers[0];
+    const supplier = unwrapSingle<Supplier>(response, 'suppliers');
     if (!supplier) {
       throw new Error('Failed to create supplier');
     }
@@ -81,11 +81,11 @@ export class SuppliersResource {
    * Update an existing supplier
    */
   async update(id: number, data: SupplierUpdateData): Promise<Supplier> {
-    const response = await this.httpClient.request<{ suppliers: Supplier[] }>('/Supplier', {
+    const response = await this.httpClient.request<Supplier | { suppliers: Supplier[] }>('/Supplier', {
       method: 'POST',
       body: [{ id, ...data }],
     });
-    const supplier = response.suppliers[0];
+    const supplier = unwrapSingle<Supplier>(response, 'suppliers');
     if (!supplier) {
       throw new Error('Failed to update supplier');
     }

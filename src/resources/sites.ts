@@ -66,11 +66,11 @@ export class SitesResource {
    * Create a new site
    */
   async create(data: SiteCreateData): Promise<Site> {
-    const response = await this.httpClient.request<{ sites: Site[] }>('/Site', {
+    const response = await this.httpClient.request<Site | { sites: Site[] }>('/Site', {
       method: 'POST',
       body: [data],
     });
-    const site = response.sites[0];
+    const site = unwrapSingle<Site>(response, 'sites');
     if (!site) {
       throw new Error('Failed to create site');
     }
@@ -81,11 +81,11 @@ export class SitesResource {
    * Update an existing site
    */
   async update(id: number, data: SiteUpdateData): Promise<Site> {
-    const response = await this.httpClient.request<{ sites: Site[] }>('/Site', {
+    const response = await this.httpClient.request<Site | { sites: Site[] }>('/Site', {
       method: 'POST',
       body: [{ id, ...data }],
     });
-    const site = response.sites[0];
+    const site = unwrapSingle<Site>(response, 'sites');
     if (!site) {
       throw new Error('Failed to update site');
     }

@@ -69,11 +69,11 @@ export class AssetsResource {
    * Create a new asset
    */
   async create(data: AssetCreateData): Promise<Asset> {
-    const response = await this.httpClient.request<{ assets: Asset[] }>('/Asset', {
+    const response = await this.httpClient.request<Asset | { assets: Asset[] }>('/Asset', {
       method: 'POST',
       body: [data],
     });
-    const asset = response.assets[0];
+    const asset = unwrapSingle<Asset>(response, 'assets');
     if (!asset) {
       throw new Error('Failed to create asset');
     }
@@ -84,11 +84,11 @@ export class AssetsResource {
    * Update an existing asset
    */
   async update(id: number, data: AssetUpdateData): Promise<Asset> {
-    const response = await this.httpClient.request<{ assets: Asset[] }>('/Asset', {
+    const response = await this.httpClient.request<Asset | { assets: Asset[] }>('/Asset', {
       method: 'POST',
       body: [{ id, ...data }],
     });
-    const asset = response.assets[0];
+    const asset = unwrapSingle<Asset>(response, 'assets');
     if (!asset) {
       throw new Error('Failed to update asset');
     }

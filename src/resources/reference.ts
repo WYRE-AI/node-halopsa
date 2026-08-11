@@ -224,21 +224,21 @@ export class KnowledgeBaseResource {
   }
 
   async create(data: KBArticleCreateData): Promise<KBArticle> {
-    const response = await this.httpClient.request<{ articles: KBArticle[] }>('/KBArticle', {
+    const response = await this.httpClient.request<KBArticle | { articles: KBArticle[] }>('/KBArticle', {
       method: 'POST',
       body: [data],
     });
-    const article = response.articles[0];
+    const article = unwrapSingle<KBArticle>(response, 'articles');
     if (!article) throw new Error('Failed to create KB article');
     return article;
   }
 
   async update(id: number, data: KBArticleUpdateData): Promise<KBArticle> {
-    const response = await this.httpClient.request<{ articles: KBArticle[] }>('/KBArticle', {
+    const response = await this.httpClient.request<KBArticle | { articles: KBArticle[] }>('/KBArticle', {
       method: 'POST',
       body: [{ id, ...data }],
     });
-    const article = response.articles[0];
+    const article = unwrapSingle<KBArticle>(response, 'articles');
     if (!article) throw new Error('Failed to update KB article');
     return article;
   }
@@ -269,21 +269,21 @@ export class RecurringInvoicesResource {
   }
 
   async create(data: RecurringInvoiceCreateData): Promise<RecurringInvoice> {
-    const response = await this.httpClient.request<{ recurring_invoices: RecurringInvoice[] }>('/RecurringInvoice', {
+    const response = await this.httpClient.request<RecurringInvoice | { recurring_invoices: RecurringInvoice[] }>('/RecurringInvoice', {
       method: 'POST',
       body: [data],
     });
-    const invoice = response.recurring_invoices[0];
+    const invoice = unwrapSingle<RecurringInvoice>(response, 'recurring_invoices');
     if (!invoice) throw new Error('Failed to create recurring invoice');
     return invoice;
   }
 
   async update(id: number, data: RecurringInvoiceUpdateData): Promise<RecurringInvoice> {
-    const response = await this.httpClient.request<{ recurring_invoices: RecurringInvoice[] }>('/RecurringInvoice', {
+    const response = await this.httpClient.request<RecurringInvoice | { recurring_invoices: RecurringInvoice[] }>('/RecurringInvoice', {
       method: 'POST',
       body: [{ id, ...data }],
     });
-    const invoice = response.recurring_invoices[0];
+    const invoice = unwrapSingle<RecurringInvoice>(response, 'recurring_invoices');
     if (!invoice) throw new Error('Failed to update recurring invoice');
     return invoice;
   }
@@ -342,21 +342,21 @@ export class SoftwareLicencesResource {
   }
 
   async create(data: SoftwareLicenceCreateData): Promise<SoftwareLicence> {
-    const response = await this.httpClient.request<{ software_licences: SoftwareLicence[] }>('/SoftwareLicence', {
+    const response = await this.httpClient.request<SoftwareLicence | { software_licences: SoftwareLicence[] }>('/SoftwareLicence', {
       method: 'POST',
       body: [data],
     });
-    const licence = response.software_licences[0];
+    const licence = unwrapSingle<SoftwareLicence>(response, 'software_licences');
     if (!licence) throw new Error('Failed to create software licence');
     return licence;
   }
 
   async update(id: number, data: SoftwareLicenceUpdateData): Promise<SoftwareLicence> {
-    const response = await this.httpClient.request<{ software_licences: SoftwareLicence[] }>('/SoftwareLicence', {
+    const response = await this.httpClient.request<SoftwareLicence | { software_licences: SoftwareLicence[] }>('/SoftwareLicence', {
       method: 'POST',
       body: [{ id, ...data }],
     });
-    const licence = response.software_licences[0];
+    const licence = unwrapSingle<SoftwareLicence>(response, 'software_licences');
     if (!licence) throw new Error('Failed to update software licence');
     return licence;
   }

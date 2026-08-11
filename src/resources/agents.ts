@@ -66,8 +66,8 @@ export class AgentsResource {
    * Get the current authenticated agent
    */
   async me(): Promise<Agent> {
-    const response = await this.httpClient.request<{ agents: Agent[] }>('/Agent/me');
-    const agent = response.agents[0];
+    const response = await this.httpClient.request<Agent | { agents: Agent[] }>('/Agent/me');
+    const agent = unwrapSingle<Agent>(response, 'agents');
     if (!agent) {
       throw new Error('Failed to get current agent');
     }
@@ -78,11 +78,11 @@ export class AgentsResource {
    * Create a new agent
    */
   async create(data: AgentCreateData): Promise<Agent> {
-    const response = await this.httpClient.request<{ agents: Agent[] }>('/Agent', {
+    const response = await this.httpClient.request<Agent | { agents: Agent[] }>('/Agent', {
       method: 'POST',
       body: [data],
     });
-    const agent = response.agents[0];
+    const agent = unwrapSingle<Agent>(response, 'agents');
     if (!agent) {
       throw new Error('Failed to create agent');
     }
@@ -93,11 +93,11 @@ export class AgentsResource {
    * Update an existing agent
    */
   async update(id: number, data: AgentUpdateData): Promise<Agent> {
-    const response = await this.httpClient.request<{ agents: Agent[] }>('/Agent', {
+    const response = await this.httpClient.request<Agent | { agents: Agent[] }>('/Agent', {
       method: 'POST',
       body: [{ id, ...data }],
     });
-    const agent = response.agents[0];
+    const agent = unwrapSingle<Agent>(response, 'agents');
     if (!agent) {
       throw new Error('Failed to update agent');
     }

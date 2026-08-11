@@ -66,11 +66,11 @@ export class ContractsResource {
    * Create a new contract
    */
   async create(data: ContractCreateData): Promise<Contract> {
-    const response = await this.httpClient.request<{ contracts: Contract[] }>('/ClientContract', {
+    const response = await this.httpClient.request<Contract | { contracts: Contract[] }>('/ClientContract', {
       method: 'POST',
       body: [data],
     });
-    const contract = response.contracts[0];
+    const contract = unwrapSingle<Contract>(response, 'contracts');
     if (!contract) {
       throw new Error('Failed to create contract');
     }
@@ -81,11 +81,11 @@ export class ContractsResource {
    * Update an existing contract
    */
   async update(id: number, data: ContractUpdateData): Promise<Contract> {
-    const response = await this.httpClient.request<{ contracts: Contract[] }>('/ClientContract', {
+    const response = await this.httpClient.request<Contract | { contracts: Contract[] }>('/ClientContract', {
       method: 'POST',
       body: [{ id, ...data }],
     });
-    const contract = response.contracts[0];
+    const contract = unwrapSingle<Contract>(response, 'contracts');
     if (!contract) {
       throw new Error('Failed to update contract');
     }

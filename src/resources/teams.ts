@@ -66,11 +66,11 @@ export class TeamsResource {
    * Create a new team
    */
   async create(data: TeamCreateData): Promise<Team> {
-    const response = await this.httpClient.request<{ teams: Team[] }>('/Team', {
+    const response = await this.httpClient.request<Team | { teams: Team[] }>('/Team', {
       method: 'POST',
       body: [data],
     });
-    const team = response.teams[0];
+    const team = unwrapSingle<Team>(response, 'teams');
     if (!team) {
       throw new Error('Failed to create team');
     }
@@ -81,11 +81,11 @@ export class TeamsResource {
    * Update an existing team
    */
   async update(id: number, data: TeamUpdateData): Promise<Team> {
-    const response = await this.httpClient.request<{ teams: Team[] }>('/Team', {
+    const response = await this.httpClient.request<Team | { teams: Team[] }>('/Team', {
       method: 'POST',
       body: [{ id, ...data }],
     });
-    const team = response.teams[0];
+    const team = unwrapSingle<Team>(response, 'teams');
     if (!team) {
       throw new Error('Failed to update team');
     }

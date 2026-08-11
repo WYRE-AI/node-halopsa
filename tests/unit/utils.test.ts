@@ -16,8 +16,17 @@ describe('unwrapSingle', () => {
     expect(unwrapSingle<{ id: number }>(bare, 'tickets')).toEqual(bare);
   });
 
+  it('returns first element of bare array response', () => {
+    const bareArray = [{ id: 4, summary: 'bare array' }, { id: 5, summary: 'second' }];
+    expect(unwrapSingle<{ id: number }>(bareArray, 'tickets')).toEqual({ id: 4, summary: 'bare array' });
+  });
+
   it('returns undefined when wrapped list is empty', () => {
     expect(unwrapSingle({ tickets: [] }, 'tickets')).toBeUndefined();
+  });
+
+  it('returns undefined when bare array is empty', () => {
+    expect(unwrapSingle([], 'tickets')).toBeUndefined();
   });
 
   it('returns undefined for null/undefined response', () => {
