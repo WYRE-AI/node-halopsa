@@ -67,11 +67,11 @@ export class QuotesResource {
    * Create a new quote
    */
   async create(data: QuoteCreateData): Promise<Quote> {
-    const response = await this.httpClient.request<{ quotations: Quote[] }>('/Quotation', {
+    const response = await this.httpClient.request<Quote | { quotations: Quote[] }>('/Quotation', {
       method: 'POST',
       body: [data],
     });
-    const quote = response.quotations[0];
+    const quote = unwrapSingle<Quote>(response, 'quotations');
     if (!quote) {
       throw new Error('Failed to create quote');
     }
@@ -82,11 +82,11 @@ export class QuotesResource {
    * Update an existing quote
    */
   async update(id: number, data: QuoteUpdateData): Promise<Quote> {
-    const response = await this.httpClient.request<{ quotations: Quote[] }>('/Quotation', {
+    const response = await this.httpClient.request<Quote | { quotations: Quote[] }>('/Quotation', {
       method: 'POST',
       body: [{ id, ...data }],
     });
-    const quote = response.quotations[0];
+    const quote = unwrapSingle<Quote>(response, 'quotations');
     if (!quote) {
       throw new Error('Failed to update quote');
     }

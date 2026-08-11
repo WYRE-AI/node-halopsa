@@ -68,11 +68,11 @@ export class ProjectsResource {
    * Create a new project
    */
   async create(data: ProjectCreateData): Promise<Project> {
-    const response = await this.httpClient.request<{ projects: Project[] }>('/Projects', {
+    const response = await this.httpClient.request<Project | { projects: Project[] }>('/Projects', {
       method: 'POST',
       body: [data],
     });
-    const project = response.projects[0];
+    const project = unwrapSingle<Project>(response, 'projects');
     if (!project) {
       throw new Error('Failed to create project');
     }
@@ -83,11 +83,11 @@ export class ProjectsResource {
    * Update an existing project
    */
   async update(id: number, data: ProjectUpdateData): Promise<Project> {
-    const response = await this.httpClient.request<{ projects: Project[] }>('/Projects', {
+    const response = await this.httpClient.request<Project | { projects: Project[] }>('/Projects', {
       method: 'POST',
       body: [{ id, ...data }],
     });
-    const project = response.projects[0];
+    const project = unwrapSingle<Project>(response, 'projects');
     if (!project) {
       throw new Error('Failed to update project');
     }

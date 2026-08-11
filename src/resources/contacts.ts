@@ -66,11 +66,11 @@ export class ContactsResource {
    * Create a new contact
    */
   async create(data: ContactCreateData): Promise<Contact> {
-    const response = await this.httpClient.request<{ users: Contact[] }>('/Users', {
+    const response = await this.httpClient.request<Contact | { users: Contact[] }>('/Users', {
       method: 'POST',
       body: [data],
     });
-    const contact = response.users[0];
+    const contact = unwrapSingle<Contact>(response, 'users');
     if (!contact) {
       throw new Error('Failed to create contact');
     }
@@ -81,11 +81,11 @@ export class ContactsResource {
    * Update an existing contact
    */
   async update(id: number, data: ContactUpdateData): Promise<Contact> {
-    const response = await this.httpClient.request<{ users: Contact[] }>('/Users', {
+    const response = await this.httpClient.request<Contact | { users: Contact[] }>('/Users', {
       method: 'POST',
       body: [{ id, ...data }],
     });
-    const contact = response.users[0];
+    const contact = unwrapSingle<Contact>(response, 'users');
     if (!contact) {
       throw new Error('Failed to update contact');
     }

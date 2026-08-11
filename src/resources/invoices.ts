@@ -66,11 +66,11 @@ export class InvoicesResource {
    * Create a new invoice
    */
   async create(data: InvoiceCreateData): Promise<Invoice> {
-    const response = await this.httpClient.request<{ invoices: Invoice[] }>('/Invoice', {
+    const response = await this.httpClient.request<Invoice | { invoices: Invoice[] }>('/Invoice', {
       method: 'POST',
       body: [data],
     });
-    const invoice = response.invoices[0];
+    const invoice = unwrapSingle<Invoice>(response, 'invoices');
     if (!invoice) {
       throw new Error('Failed to create invoice');
     }
@@ -81,11 +81,11 @@ export class InvoicesResource {
    * Update an existing invoice
    */
   async update(id: number, data: InvoiceUpdateData): Promise<Invoice> {
-    const response = await this.httpClient.request<{ invoices: Invoice[] }>('/Invoice', {
+    const response = await this.httpClient.request<Invoice | { invoices: Invoice[] }>('/Invoice', {
       method: 'POST',
       body: [{ id, ...data }],
     });
-    const invoice = response.invoices[0];
+    const invoice = unwrapSingle<Invoice>(response, 'invoices');
     if (!invoice) {
       throw new Error('Failed to update invoice');
     }

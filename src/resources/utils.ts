@@ -3,17 +3,21 @@
  */
 
 /**
- * HaloPSA's `GET /<Entity>/{id}` endpoints sometimes return the entity bare
- * (`{ id: 1, ... }`) and sometimes wrap it in a list-style envelope
- * (`{ entities: [{...}] }`). The shape is endpoint- and version-dependent.
- * This helper accepts either form and returns the entity (or undefined).
+ * HaloPSA's single-entity endpoints (`GET /<Entity>/{id}` and `POST /<Entity>`
+ * create/update) return the entity bare (`{ id: 1, ... }`), wrapped in a
+ * list-style envelope (`{ entities: [{...}] }`), or as a bare array
+ * (`[{ id: 1, ... }]`). The shape is endpoint- and version-dependent.
+ * This helper accepts all three forms and returns the entity (or undefined).
  */
 export function unwrapSingle<T>(
-  response: T | Record<string, unknown> | undefined | null,
+  response: T | T[] | Record<string, unknown> | undefined | null,
   listKey: string
 ): T | undefined {
   if (!response || typeof response !== 'object') {
     return undefined;
+  }
+  if (Array.isArray(response)) {
+    return response[0] as T | undefined;
   }
   const wrapped = (response as Record<string, unknown>)[listKey];
   if (Array.isArray(wrapped)) {

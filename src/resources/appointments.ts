@@ -66,11 +66,11 @@ export class AppointmentsResource {
    * Create a new appointment
    */
   async create(data: AppointmentCreateData): Promise<Appointment> {
-    const response = await this.httpClient.request<{ appointments: Appointment[] }>('/Appointment', {
+    const response = await this.httpClient.request<Appointment | { appointments: Appointment[] }>('/Appointment', {
       method: 'POST',
       body: [data],
     });
-    const appointment = response.appointments[0];
+    const appointment = unwrapSingle<Appointment>(response, 'appointments');
     if (!appointment) {
       throw new Error('Failed to create appointment');
     }
@@ -81,11 +81,11 @@ export class AppointmentsResource {
    * Update an existing appointment
    */
   async update(id: number, data: AppointmentUpdateData): Promise<Appointment> {
-    const response = await this.httpClient.request<{ appointments: Appointment[] }>('/Appointment', {
+    const response = await this.httpClient.request<Appointment | { appointments: Appointment[] }>('/Appointment', {
       method: 'POST',
       body: [{ id, ...data }],
     });
-    const appointment = response.appointments[0];
+    const appointment = unwrapSingle<Appointment>(response, 'appointments');
     if (!appointment) {
       throw new Error('Failed to update appointment');
     }

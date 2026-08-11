@@ -61,11 +61,11 @@ export class ActionsResource {
    * Create a new action
    */
   async create(data: ActionCreateData): Promise<Action> {
-    const response = await this.httpClient.request<{ actions: Action[] }>('/Actions', {
+    const response = await this.httpClient.request<Action | { actions: Action[] }>('/Actions', {
       method: 'POST',
       body: [data],
     });
-    const action = response.actions[0];
+    const action = unwrapSingle<Action>(response, 'actions');
     if (!action) {
       throw new Error('Failed to create action');
     }
@@ -76,11 +76,11 @@ export class ActionsResource {
    * Update an existing action
    */
   async update(id: number, data: ActionUpdateData): Promise<Action> {
-    const response = await this.httpClient.request<{ actions: Action[] }>('/Actions', {
+    const response = await this.httpClient.request<Action | { actions: Action[] }>('/Actions', {
       method: 'POST',
       body: [{ id, ...data }],
     });
-    const action = response.actions[0];
+    const action = unwrapSingle<Action>(response, 'actions');
     if (!action) {
       throw new Error('Failed to update action');
     }
