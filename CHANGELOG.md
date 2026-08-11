@@ -1,3 +1,10 @@
+## [1.0.9](https://github.com/wyre-technology/node-halopsa/compare/v1.0.8...v1.0.9) (2026-08-11)
+
+
+### Bug Fixes
+
+* **resources:** accept bare object/array responses on create/update paths ([#59](https://github.com/wyre-technology/node-halopsa/issues/59)) ([41e30fc](https://github.com/wyre-technology/node-halopsa/commit/41e30fc365fa7a976159d0499dcc6421b9e3c4f4)), closes [wyre-technology/halopsa-mcp#76](https://github.com/wyre-technology/halopsa-mcp/issues/76)
+
 ## [1.0.8](https://github.com/wyre-technology/node-halopsa/compare/v1.0.7...v1.0.8) (2026-08-06)
 
 
