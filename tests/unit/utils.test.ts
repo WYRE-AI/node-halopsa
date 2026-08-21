@@ -36,11 +36,23 @@ describe('unwrapSingle', () => {
 });
 
 describe('addPageinate', () => {
-  it('adds pageinate=true when page_size is set', () => {
-    expect(addPageinate({ page_size: 10 })).toEqual({ page_size: 10, pageinate: true });
+  // Regression: HaloPSA only honors a caller's page_size when page_no is
+  // ALSO present on the same request. page_size alone (pageinate=true, no
+  // page_no) is accepted but silently ignored -- the API falls back to its
+  // own default page size (50) for that implicit first page, with no error.
+  it('defaults page_no to 1 when page_size is set without it', () => {
+    expect(addPageinate({ page_size: 10 })).toEqual({ page_size: 10, page_no: 1, pageinate: true });
   });
 
-  it('adds pageinate=true when page_no is set', () => {
+  it('does not override an explicit page_no', () => {
+    expect(addPageinate({ page_size: 10, page_no: 2 })).toEqual({
+      page_size: 10,
+      page_no: 2,
+      pageinate: true,
+    });
+  });
+
+  it('adds pageinate=true when only page_no is set', () => {
     expect(addPageinate({ page_no: 2 })).toEqual({ page_no: 2, pageinate: true });
   });
 
@@ -53,6 +65,7 @@ describe('buildListParams', () => {
   it('camelCase → snake_case', () => {
     expect(buildListParams({ pageSize: 25, openOnly: true })).toEqual({
       page_size: 25,
+      page_no: 1,
       open_only: true,
       pageinate: true,
     });
