@@ -1,3 +1,10 @@
+## [1.0.10](https://github.com/wyre-technology/node-halopsa/compare/v1.0.9...v1.0.10) (2026-08-21)
+
+
+### Bug Fixes
+
+* **tickets:** page_size ignored on first page, dateoccurred_start/end silently ignored ([#63](https://github.com/wyre-technology/node-halopsa/issues/63)) ([c662f30](https://github.com/wyre-technology/node-halopsa/commit/c662f30cd1e747e4bdedd33960542803500dac27))
+
 ## [1.0.9](https://github.com/wyre-technology/node-halopsa/compare/v1.0.8...v1.0.9) (2026-08-11)
 
 
