@@ -64,9 +64,9 @@ export interface TicketListParams extends BaseListParams {
   tickettype_id?: number;
   /** Filter by category */
   category_1?: string;
-  /** Filter by date occurred start */
+  /** Filter by date occurred start (translated to HaloPSA's datesearch/startdate pair) */
   dateoccurred_start?: string;
-  /** Filter by date occurred end */
+  /** Filter by date occurred end (translated to HaloPSA's datesearch/enddate pair) */
   dateoccurred_end?: string;
   /** Show only open tickets */
   open_only?: boolean;

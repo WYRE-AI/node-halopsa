@@ -30,12 +30,26 @@ export function unwrapSingle<T>(
  * HaloPSA silently ignores `page_size`/`page_no` unless `pageinate=true`
  * (their typo, not ours) is sent alongside. Mutates the params object in
  * place when paging is requested.
+ *
+ * Also defaults `page_no` to `1` whenever `page_size` is set without it:
+ * HaloPSA only honors a caller's `page_size` when `page_no` is *also*
+ * present on the same request. Send `page_size` alone (as every single-page
+ * `.list({ pageSize })` call did before this fix) and the API silently
+ * falls back to its own default page size (50) for that implicit first
+ * page — `page_size` is accepted but ignored, with no error, and the
+ * records between the truncated first page and an explicit `page_no: 2`
+ * request are never returned by any call. `record_count` is affected the
+ * same way: it only reports the true total once pagination is genuinely
+ * active on every request, which requires `page_no` to be explicit too.
  */
 export function addPageinate(
   params: Record<string, string | number | boolean | undefined>
 ): Record<string, string | number | boolean | undefined> {
   if (params.page_size !== undefined || params.page_no !== undefined) {
     params.pageinate = true;
+    if (params.page_no === undefined) {
+      params.page_no = 1;
+    }
   }
   return params;
 }

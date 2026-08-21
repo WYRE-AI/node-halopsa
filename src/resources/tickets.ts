@@ -36,7 +36,7 @@ export class TicketsResource {
    */
   async list(params?: TicketListParams): Promise<TicketListResponse> {
     return this.httpClient.request<TicketListResponse>('/Tickets', {
-      params: this.buildListParams(params),
+      params: this.buildTicketListParams(params),
     });
   }
 
@@ -48,7 +48,7 @@ export class TicketsResource {
       this.httpClient,
       '/Tickets',
       'tickets',
-      this.buildListParams(params)
+      this.buildTicketListParams(params)
     );
   }
 
@@ -108,7 +108,7 @@ export class TicketsResource {
    */
   async actions(id: number, params?: ActionListParams): Promise<ActionListResponse> {
     return this.httpClient.request<ActionListResponse>(`/Tickets/${id}/Actions`, {
-      params: this.buildListParams(params),
+      params: sharedBuildListParams(params),
     });
   }
 
@@ -150,9 +150,35 @@ export class TicketsResource {
   }
 
   /**
-   * Build query parameters from list params
+   * Build query parameters for `list()`/`listAll()`.
+   *
+   * `dateoccurred_start`/`dateoccurred_end` are not real HaloPSA query
+   * parameters -- sending them literally (as the shared camelCase→snake_case
+   * converter would, since they're already snake_case) is accepted and
+   * silently ignored by the API, with no error and no filtering applied.
+   * The actual mechanism (confirmed against HaloPSA's own
+   * `/api/swagger/v2/swagger.json`) is a generic `datesearch=<field>` plus
+   * `startdate`/`enddate` pair; `dateoccured` (missing the second 'r') is
+   * HaloPSA's own misspelling of the "date opened" field, not ours.
+   *
+   * Only ticket list params carry this pair (`actions()` uses the shared
+   * `buildListParams` directly), so this stays properly typed rather than
+   * the generic `<T extends object>` every other resource's private helper
+   * uses -- there's no other caller to support here.
    */
-  private buildListParams<T extends object>(params?: T): Record<string, string | number | boolean | undefined> {
-    return sharedBuildListParams(params);
+  private buildTicketListParams(
+    params?: TicketListParams
+  ): Record<string, string | number | boolean | undefined> {
+    if (params?.dateoccurred_start === undefined && params?.dateoccurred_end === undefined) {
+      return sharedBuildListParams(params);
+    }
+
+    const { dateoccurred_start, dateoccurred_end, ...rest } = params;
+    return sharedBuildListParams({
+      ...rest,
+      datesearch: 'dateoccured',
+      startdate: dateoccurred_start,
+      enddate: dateoccurred_end,
+    });
   }
 }

@@ -30,6 +30,76 @@ describe('TicketsResource', () => {
       expect(response.tickets).toHaveLength(1);
       expect(response.tickets[0]?.summary).toBe('Printer not working');
     });
+
+    // Regression: a page_size-only call (no page_no) was sent as
+    // pageinate=true&page_size=100 with no page_no -- HaloPSA silently
+    // ignored page_size on that implicit first page and fell back to its
+    // own default (50), leaving a hole between it and an explicit
+    // page_no=2 request. Every list() call must send page_no explicitly.
+    it('sends an explicit page_no so HaloPSA honors page_size on the first page', async () => {
+      const { server } = await import('../mocks/server.js');
+      const { http, HttpResponse } = await import('msw');
+      let capturedParams: URLSearchParams | undefined;
+      server.use(
+        http.get('https://testcompany.halopsa.com/api/Tickets', ({ request }) => {
+          capturedParams = new URL(request.url).searchParams;
+          return HttpResponse.json({ record_count: 385, tickets: [] });
+        })
+      );
+
+      const client = createClient();
+      await client.tickets.list({ pageSize: 100 });
+
+      expect(capturedParams?.get('page_size')).toBe('100');
+      expect(capturedParams?.get('page_no')).toBe('1');
+      expect(capturedParams?.get('pageinate')).toBe('true');
+    });
+
+    // Regression: dateoccurred_start/dateoccurred_end are not real HaloPSA
+    // query parameters -- sent literally, the API accepted and silently
+    // ignored them with no filtering applied and no error. HaloPSA expects
+    // datesearch=<field> plus startdate/enddate instead.
+    it('translates dateoccurred_start/dateoccurred_end into datesearch+startdate+enddate', async () => {
+      const { server } = await import('../mocks/server.js');
+      const { http, HttpResponse } = await import('msw');
+      let capturedParams: URLSearchParams | undefined;
+      server.use(
+        http.get('https://testcompany.halopsa.com/api/Tickets', ({ request }) => {
+          capturedParams = new URL(request.url).searchParams;
+          return HttpResponse.json({ record_count: 0, tickets: [] });
+        })
+      );
+
+      const client = createClient();
+      await client.tickets.list({
+        dateoccurred_start: '2025-08-01T00:00:00Z',
+        dateoccurred_end: '2026-05-01T00:00:00Z',
+      });
+
+      expect(capturedParams?.get('datesearch')).toBe('dateoccured');
+      expect(capturedParams?.get('startdate')).toBe('2025-08-01T00:00:00Z');
+      expect(capturedParams?.get('enddate')).toBe('2026-05-01T00:00:00Z');
+      expect(capturedParams?.has('dateoccurred_start')).toBe(false);
+      expect(capturedParams?.has('dateoccurred_end')).toBe(false);
+    });
+
+    it('leaves other filters untouched when no date range is given', async () => {
+      const { server } = await import('../mocks/server.js');
+      const { http, HttpResponse } = await import('msw');
+      let capturedParams: URLSearchParams | undefined;
+      server.use(
+        http.get('https://testcompany.halopsa.com/api/Tickets', ({ request }) => {
+          capturedParams = new URL(request.url).searchParams;
+          return HttpResponse.json({ record_count: 0, tickets: [] });
+        })
+      );
+
+      const client = createClient();
+      await client.tickets.list({ client_id: 467 });
+
+      expect(capturedParams?.get('client_id')).toBe('467');
+      expect(capturedParams?.has('datesearch')).toBe(false);
+    });
   });
 
   describe('listAll', () => {
