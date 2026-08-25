@@ -1,5 +1,5 @@
 {
-  "name": "@wyre-technology/node-halopsa",
+  "name": "@wyre-ai/node-halopsa",
   "version": "1.0.10",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
@@ -51,12 +51,12 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wyre-technology/node-halopsa.git"
+    "url": "git+https://github.com/WYRE-AI/node-halopsa.git"
   },
   "bugs": {
-    "url": "https://github.com/wyre-technology/node-halopsa/issues"
+    "url": "https://github.com/WYRE-AI/node-halopsa/issues"
   },
-  "homepage": "https://github.com/wyre-technology/node-halopsa#readme",
+  "homepage": "https://github.com/WYRE-AI/node-halopsa#readme",
   "engines": {
     "node": ">=22.0.0"
   },
