@@ -1,3 +1,11 @@
+## [1.0.11](https://github.com/WYRE-AI/node-halopsa/compare/v1.0.10...v1.0.11) (2026-08-25)
+
+
+### Bug Fixes
+
+* **deps:** ignore the unreachable npm-bundled undici alert ([#67](https://github.com/WYRE-AI/node-halopsa/issues/67)) ([287711c](https://github.com/WYRE-AI/node-halopsa/commit/287711c651ed90ef0a59ab54369f6255f2ff730d))
+* migrate to WYRE-AI org (npm scope, ghcr namespace, registry) ([#69](https://github.com/WYRE-AI/node-halopsa/issues/69)) ([7c944fe](https://github.com/WYRE-AI/node-halopsa/commit/7c944fe7e81296044743a85c723ca330cd9ab750))
+
 ## [1.0.10](https://github.com/wyre-technology/node-halopsa/compare/v1.0.9...v1.0.10) (2026-08-21)
 
 
