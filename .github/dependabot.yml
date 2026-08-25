@@ -52,6 +52,32 @@ updates:
       # or just remove this ignore and see if Dependabot succeeds) bundles a
       # fixed ip-address, then remove this block.
       - dependency-name: "ip-address"
+      # undici (GHSA cookie-injection / CRLF injection / response desync, affects
+      # <6.28.0) is unreachable for its one vulnerable instance, not unaddressed.
+      # This repo has THREE separate undici copies: node_modules/undici (6.28.0,
+      # already patched), @semantic-release/github's own copy (7.29.0, already
+      # patched), and node_modules/npm/node_modules/undici (6.27.0, vulnerable) --
+      # the last one nested inside npm's OWN bundled dependency tree
+      # (@semantic-release/npm -> npm@^11.6.2 (bundled) -> ... -> undici@6.27.0).
+      # Same shape as the ip-address entry above: verified empirically 2026-08-25
+      # that a package.json `overrides` pin for undici has ZERO effect on this
+      # path (node_modules/npm/node_modules/undici stayed at 6.27.0 after
+      # `npm install --package-lock-only` with the override in place). No amount
+      # of top-level dependency management in THIS repo can reach it; only a new
+      # `npm` release bundling a patched undici closes this. Without this ignore,
+      # Dependabot's security job retries and fails trying to patch an
+      # unreachable nested copy, the same doomed-daily-job problem the ip-address
+      # entry documents.
+      # The underlying GHSA alerts stay open/visible on the repo's Security >
+      # Dependabot alerts tab regardless of this ignore -- this only stops the
+      # doomed PR-open attempt, it does not dismiss the vulnerability.
+      # Revisit: periodically confirm whether a newer npm bundles a fixed undici
+      # (check node_modules/npm/node_modules/undici's version after a fresh
+      # install, or just remove this ignore and see if Dependabot succeeds),
+      # then remove this block. Does NOT affect the two already-patched top-level
+      # undici instances -- those aren't what's being ignored, this only stops
+      # Dependabot's doomed attempt to reach the bundled one.
+      - dependency-name: "undici"
       # typescript 7.x breaks this fleet's toolchain: DTS emit (tsup/rollup-plugin-dts
       # TS5101 baseUrl-deprecated-as-error), and typescript-eslint (still <6.1.0 as of
       # 8.66.0, no TS7 support yet). Has broken main 3x on some repos because Dependabot
