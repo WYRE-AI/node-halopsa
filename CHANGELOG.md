@@ -1,3 +1,10 @@
+## [1.0.12](https://github.com/WYRE-AI/node-halopsa/compare/v1.0.11...v1.0.12) (2026-08-26)
+
+
+### Bug Fixes
+
+* **appointments:** startdate_start/startdate_end silently ignored ([#70](https://github.com/WYRE-AI/node-halopsa/issues/70)) ([c3e2be2](https://github.com/WYRE-AI/node-halopsa/commit/c3e2be276528e806487826e1f78d758001990bca)), closes [#63](https://github.com/WYRE-AI/node-halopsa/issues/63) [wyre-technology/node-halopsa#63](https://github.com/wyre-technology/node-halopsa/issues/63)
+
 ## [1.0.11](https://github.com/WYRE-AI/node-halopsa/compare/v1.0.10...v1.0.11) (2026-08-25)
 
 
