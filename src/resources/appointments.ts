@@ -29,7 +29,7 @@ export class AppointmentsResource {
    */
   async list(params?: AppointmentListParams): Promise<AppointmentListResponse> {
     return this.httpClient.request<AppointmentListResponse>('/Appointment', {
-      params: this.buildListParams(params),
+      params: this.buildAppointmentListParams(params),
     });
   }
 
@@ -41,7 +41,7 @@ export class AppointmentsResource {
       this.httpClient,
       '/Appointment',
       'appointments',
-      this.buildListParams(params)
+      this.buildAppointmentListParams(params)
     );
   }
 
@@ -102,9 +102,29 @@ export class AppointmentsResource {
   }
 
   /**
-   * Build query parameters from list params
+   * Build query parameters for `list()`/`listAll()`.
+   *
+   * `startdate_start`/`startdate_end` are not real HaloPSA query parameters
+   * -- confirmed against HaloPSA's own `/api/swagger/v2/swagger.json` --
+   * sending them literally (as the shared camelCase→snake_case converter
+   * would, since they're already snake_case) is accepted and silently
+   * ignored, with no filtering applied and no error. The real parameters
+   * are `start_date`/`end_date`. Unlike Tickets, the Appointment endpoint
+   * takes no `datesearch` parameter at all -- `start_date`/`end_date` are
+   * unconditional, not paired with a date-field selector.
    */
-  private buildListParams<T extends object>(params?: T): Record<string, string | number | boolean | undefined> {
-    return sharedBuildListParams(params);
+  private buildAppointmentListParams(
+    params?: AppointmentListParams
+  ): Record<string, string | number | boolean | undefined> {
+    if (params?.startdate_start === undefined && params?.startdate_end === undefined) {
+      return sharedBuildListParams(params);
+    }
+
+    const { startdate_start, startdate_end, ...rest } = params;
+    return sharedBuildListParams({
+      ...rest,
+      start_date: startdate_start,
+      end_date: startdate_end,
+    });
   }
 }

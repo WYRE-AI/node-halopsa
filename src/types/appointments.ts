@@ -36,9 +36,9 @@ export interface AppointmentListParams extends BaseListParams {
   client_id?: number;
   /** Filter by agent */
   agent_id?: number;
-  /** Filter by start date */
+  /** Filter by start date (translated to HaloPSA's start_date parameter) */
   startdate_start?: string;
-  /** Filter by end date */
+  /** Filter by end date (translated to HaloPSA's end_date parameter) */
   startdate_end?: string;
 }
 
