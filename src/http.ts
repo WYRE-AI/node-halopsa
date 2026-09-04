@@ -8,6 +8,7 @@ import type { RateLimiter } from './rate-limiter.js';
 import {
   HaloPsaError,
   HaloPsaAuthenticationError,
+  HaloPsaBadRequestError,
   HaloPsaForbiddenError,
   HaloPsaNotFoundError,
   HaloPsaValidationError,
@@ -163,14 +164,20 @@ export class HttpClient {
 
     switch (response.status) {
       case 400:
-        // Could be bad credentials on token request or validation error
+        // Every request that reaches here is a resource call (skipAuth is
+        // never true outside this file — the OAuth token endpoint is
+        // fetched directly by AuthManager, not through HttpClient), so a
+        // 400 here is never a credentials problem: the Bearer token, if
+        // wrong, fails as a 401 below, not a 400. This is the request body
+        // itself being rejected — a missing/invalid field HaloPSA's
+        // server-side validation requires but this SDK doesn't mark
+        // `required` (e.g. Actions' `outcome`), or similar.
         if (this.isValidationError(responseBody)) {
           const errors = this.parseValidationErrors(responseBody);
           throw new HaloPsaValidationError('Validation error', errors, responseBody);
         }
-        throw new HaloPsaAuthenticationError(
-          'Bad request - invalid credentials or parameters',
-          400,
+        throw new HaloPsaBadRequestError(
+          `Bad request (400): ${method} ${url} rejected the request parameters`,
           responseBody
         );
 

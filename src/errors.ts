@@ -21,7 +21,10 @@ export class HaloPsaError extends Error {
 }
 
 /**
- * Authentication error (400 bad credentials, 401 unauthorized)
+ * Authentication error (401 unauthorized; also 400 from the OAuth token
+ * endpoint itself, thrown directly by AuthManager — never by HttpClient,
+ * since resource requests never carry skipAuth and so never reach
+ * HttpClient's own 400 branch, see HaloPsaBadRequestError)
  */
 export class HaloPsaAuthenticationError extends HaloPsaError {
   constructor(message: string, statusCode: number = 401, response?: unknown) {
@@ -65,6 +68,22 @@ export class HaloPsaValidationError extends HaloPsaError {
     this.name = 'HaloPsaValidationError';
     this.errors = errors;
     Object.setPrototypeOf(this, HaloPsaValidationError.prototype);
+  }
+}
+
+/**
+ * Bad request error (400 from a resource endpoint that isn't a recognized
+ * validation-error shape — a malformed or incomplete request payload, not
+ * a credentials problem. Resource requests are always authenticated via a
+ * Bearer token by the time they reach here, so a plain 400 here can't be
+ * "bad credentials" the way it legitimately can be on the OAuth token
+ * endpoint itself; see HaloPsaAuthenticationError)
+ */
+export class HaloPsaBadRequestError extends HaloPsaError {
+  constructor(message: string, response?: unknown) {
+    super(message, 400, response);
+    this.name = 'HaloPsaBadRequestError';
+    Object.setPrototypeOf(this, HaloPsaBadRequestError.prototype);
   }
 }
 

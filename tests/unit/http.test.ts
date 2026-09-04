@@ -14,8 +14,11 @@ import { AuthManager } from '../../src/auth.js';
 import { RateLimiter } from '../../src/rate-limiter.js';
 import {
   HaloPsaError,
+  HaloPsaAuthenticationError,
+  HaloPsaBadRequestError,
   HaloPsaNotFoundError,
   HaloPsaServerError,
+  HaloPsaValidationError,
 } from '../../src/errors.js';
 import type { ResolvedConfig } from '../../src/config.js';
 
@@ -123,6 +126,37 @@ describe('HttpClient response handling', () => {
     expect(err).toBeInstanceOf(HaloPsaServerError);
     expect((err as HaloPsaServerError).response).toEqual({ message: 'boom' });
   }, 15000);
+
+  it('a non-validation-shaped 400 raises HaloPsaBadRequestError, not an auth error', async () => {
+    // Regression: node-halopsa#78 — a 400 from a resource endpoint (e.g. a
+    // required field like Actions' `outcome` missing) used to throw
+    // HaloPsaAuthenticationError with a "invalid credentials or parameters"
+    // message, which read as a permissions/credentials problem to callers
+    // even though the Bearer token was never in question — a bad token
+    // fails as 401, not 400. This body has neither `errors` nor
+    // `validation_errors`, so it isn't the recognized validation shape.
+    vi.mocked(fetch).mockResolvedValue(
+      realResponse('{"message":"outcome is required"}', { status: 400 })
+    );
+    const err = await makeClient()
+      .request('/Actions', { method: 'POST', body: [{ ticket_id: 1, note: 'hi' }] })
+      .catch((e: unknown) => e);
+    expect(err).toBeInstanceOf(HaloPsaBadRequestError);
+    expect(err).not.toBeInstanceOf(HaloPsaAuthenticationError);
+    expect((err as HaloPsaBadRequestError).message).not.toMatch(/credentials/i);
+    expect((err as HaloPsaBadRequestError).response).toEqual({ message: 'outcome is required' });
+  });
+
+  it('a validation-shaped 400 still raises HaloPsaValidationError', async () => {
+    vi.mocked(fetch).mockResolvedValue(
+      realResponse('{"errors":[{"field":"outcome","message":"is required"}]}', { status: 400 })
+    );
+    const err = await makeClient()
+      .request('/Actions', { method: 'POST', body: [{ ticket_id: 1, note: 'hi' }] })
+      .catch((e: unknown) => e);
+    expect(err).toBeInstanceOf(HaloPsaValidationError);
+    expect((err as HaloPsaValidationError).errors).toEqual([{ field: 'outcome', message: 'is required' }]);
+  });
 
   it('generic non-2xx statuses raise HaloPsaError with the raw body', async () => {
     vi.mocked(fetch).mockResolvedValue(
