@@ -14,6 +14,7 @@ export { DEFAULT_RATE_LIMIT_CONFIG } from './config.js';
 export {
   HaloPsaError,
   HaloPsaAuthenticationError,
+  HaloPsaBadRequestError,
   HaloPsaForbiddenError,
   HaloPsaNotFoundError,
   HaloPsaValidationError,
