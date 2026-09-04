@@ -1,3 +1,16 @@
+# [1.1.0](https://github.com/WYRE-AI/node-halopsa/compare/v1.0.13...v1.1.0) (2026-09-04)
+
+
+### Bug Fixes
+
+* **http:** stop labeling resource-endpoint 400s as credential errors ([#79](https://github.com/WYRE-AI/node-halopsa/issues/79)) ([43a123f](https://github.com/WYRE-AI/node-halopsa/commit/43a123f550852e685cedac26a5a965ee654da9fb)), closes [#78](https://github.com/WYRE-AI/node-halopsa/issues/78)
+
+
+### Features
+
+* **release:** use extracted CHANGELOG notes instead of --generate-notes ([#76](https://github.com/WYRE-AI/node-halopsa/issues/76)) ([e5b8e97](https://github.com/WYRE-AI/node-halopsa/commit/e5b8e970757c4fb1e8b452c323ddf8a10c5d74b3)), closes [node-datto-rmm#77](https://github.com/node-datto-rmm/issues/77)
+
+
 ## [1.0.13](https://github.com/WYRE-AI/node-halopsa/compare/v1.0.12...v1.0.13) (2026-09-04)
 
 
