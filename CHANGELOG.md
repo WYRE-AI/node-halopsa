@@ -1,3 +1,11 @@
+## [1.0.13](https://github.com/WYRE-AI/node-halopsa/compare/v1.0.12...v1.0.13) (2026-09-04)
+
+
+### Bug Fixes
+
+* **security:** resolve dependabot alerts via npm audit fix ([#73](https://github.com/WYRE-AI/node-halopsa/issues/73)) ([ee1d119](https://github.com/WYRE-AI/node-halopsa/commit/ee1d119da4ff6f85f001f9bcd3f98ce5ee344573))
+
+
 ## [1.0.12](https://github.com/WYRE-AI/node-halopsa/compare/v1.0.11...v1.0.12) (2026-08-26)
 
 
