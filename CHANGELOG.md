@@ -6,12 +6,6 @@
 * **deps:** resolve js-yaml CVE-2026-84375 ([#83](https://github.com/WYRE-AI/node-halopsa/issues/83)) ([8e7a7b1](https://github.com/WYRE-AI/node-halopsa/commit/8e7a7b191407c20a04176d2fb6d0accee744efbf))
 
 
-## [Unreleased]
-
-### Security
-
-- **Resolved js-yaml high-severity advisory CVE-2026-84375** (fixed in js-yaml >= 4.3.2). js-yaml is only a transitive devDependency, pulled on the 4.x line via `cosmiconfig`. Added a scoped npm `override` (`cosmiconfig` → `js-yaml ^4.3.2`) to force the patched line. `npm audit` reports 0 vulnerabilities.
-
 # [1.1.0](https://github.com/WYRE-AI/node-halopsa/compare/v1.0.13...v1.1.0) (2026-09-04)
 
 
