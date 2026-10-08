@@ -1,3 +1,11 @@
+## [1.1.2](https://github.com/WYRE-AI/node-halopsa/compare/v1.1.1...v1.1.2) (2026-10-08)
+
+
+### Bug Fixes
+
+* **release:** push release/next with App token + recognize unbracketed CHANGELOG headings ([#87](https://github.com/WYRE-AI/node-halopsa/issues/87)) ([b23a637](https://github.com/WYRE-AI/node-halopsa/commit/b23a6370401bce86fe1e3ec99105c73122df5f87)), closes [WYRE-AI/node-domotz#52](https://github.com/WYRE-AI/node-domotz/issues/52)
+
+
 ## [1.1.1](https://github.com/WYRE-AI/node-halopsa/compare/v1.1.0...v1.1.1) (2026-09-15)
 
 
