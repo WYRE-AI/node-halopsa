@@ -1,3 +1,13 @@
+## [1.1.2](https://github.com/WYRE-AI/node-halopsa/compare/v1.1.1...v1.1.2) (2026-10-16)
+
+
+### Bug Fixes
+
+* **actions:** add GET /Actions visibility filters (excludeprivate etc.) ([#95](https://github.com/WYRE-AI/node-halopsa/issues/95)) ([e13bf7a](https://github.com/WYRE-AI/node-halopsa/commit/e13bf7a5adb75149bd0e582a39d85bd5909b2dda))
+* **dependabot:** ungroup msw/vitest majors from auto-merged dev-dependencies ([#92](https://github.com/WYRE-AI/node-halopsa/issues/92)) ([ed76f2b](https://github.com/WYRE-AI/node-halopsa/commit/ed76f2b87db2e4e8dc1d7fb45e0ca0d57b791060))
+* **release:** push release/next with App token + recognize unbracketed CHANGELOG headings ([#87](https://github.com/WYRE-AI/node-halopsa/issues/87)) ([b23a637](https://github.com/WYRE-AI/node-halopsa/commit/b23a6370401bce86fe1e3ec99105c73122df5f87)), closes [WYRE-AI/node-domotz#52](https://github.com/WYRE-AI/node-domotz/issues/52)
+
+
 ## [1.1.1](https://github.com/WYRE-AI/node-halopsa/compare/v1.1.0...v1.1.1) (2026-09-15)
 
 
