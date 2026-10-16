@@ -157,6 +157,27 @@ export interface TicketAction {
 export interface ActionListParams extends BaseListParams {
   /** Filter by ticket */
   ticket_id?: number;
+  /**
+   * Only return public actions. HaloPSA defaults this to false (private
+   * actions included). Set to `false` explicitly to request private notes.
+   */
+  excludeprivate?: boolean;
+  /** Exclude system-generated actions */
+  excludesys?: boolean;
+  /** Exclude actions marked hidden from agents with a Client Group set */
+  excludehiddenfrominternalit?: boolean;
+  /** Only return actions performed by agents */
+  agentonly?: boolean;
+  /** Only return actions in the agent / end-user conversation */
+  conversationonly?: boolean;
+  /** Only return actions relating to suppliers */
+  supplieronly?: boolean;
+  /** Only return important actions */
+  importantonly?: boolean;
+  /** Include the note HTML in the response */
+  includehtmlnote?: boolean;
+  /** Include attachment details in the response */
+  includeattachments?: boolean;
 }
 
 /**
