@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.3](https://github.com/WYRE-AI/node-halopsa/compare/v1.1.2...v1.1.3) (2026-11-12)
+
+
+### Bug Fixes
+
+* **release:** add changelogTitle config to prevent changelog header orphaning ([#91](https://github.com/WYRE-AI/node-halopsa/issues/91)) ([6537991](https://github.com/WYRE-AI/node-halopsa/commit/65379910da9273bc743b28436d5922ac3498917c))
+
+
 ## [1.1.2](https://github.com/WYRE-AI/node-halopsa/compare/v1.1.1...v1.1.2) (2026-10-16)
 
 
