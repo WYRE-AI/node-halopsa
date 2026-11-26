@@ -39,21 +39,13 @@ import type {
   SoftwareLicenceCreateData,
   SoftwareLicenceUpdateData,
 } from '../types/reference.js';
-import { unwrapSingle } from './utils.js';
+import { buildListParams, unwrapSingle } from './utils.js';
 
 /**
  * Convert params to request params format
  */
 function toRequestParams<T extends object>(params?: T): Record<string, string | number | boolean | undefined> | undefined {
-  if (!params) return undefined;
-  const result: Record<string, string | number | boolean | undefined> = {};
-  for (const [key, value] of Object.entries(params)) {
-    if (value !== undefined) {
-      const apiKey = key.replace(/([A-Z])/g, '_$1').toLowerCase();
-      result[apiKey] = value as string | number | boolean;
-    }
-  }
-  return result;
+  return params ? buildListParams(params) : undefined;
 }
 
 /**
