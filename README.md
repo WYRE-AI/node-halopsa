@@ -52,10 +52,9 @@ const client = new HaloPsaClient({
   clientId: 'your-client-id',
   clientSecret: 'your-client-secret',
 
-  // Provide one of these:
   tenant: 'yourcompany',                        // Uses https://yourcompany.halopsa.com
-  // OR
-  baseUrl: 'https://yourcompany.halopsa.com',  // Explicit URL
+  // For a custom domain, replace the tenant line with the instance URL:
+  // baseUrl: 'https://helpdesk.example.com',
 
   // Optional
   tenantId: 'specific-tenant-id',              // For multi-tenant applications
@@ -72,6 +71,8 @@ const client = new HaloPsaClient({
   },
 });
 ```
+
+Use the instance URL for `baseUrl`. The SDK appends `/api` for resource requests and `/auth/token` for authentication. If both options are supplied, `baseUrl` takes precedence.
 
 ## Resources
 
